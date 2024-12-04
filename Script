@@ -1,0 +1,30 @@
+try
+	-- Retrieve the current battery information as a string
+	set batteryInfo to do shell script "pmset -g batt"
+	
+	-- Extract the battery percentage from the battery information string
+	set batteryLevel to (do shell script "echo \"" & batteryInfo & "\" | grep -o '[0-9]\\{1,3\\}%' | sed 's/%//'") as integer
+	
+	-- Determine if the MacBook is currently connected to power (charging)
+	set isCharging to batteryInfo contains "AC Power"
+	
+	-- Check if the battery is at or above 70% and charging
+	if batteryLevel ≥ 70 and isCharging then
+		-- Create a reminder to remove the charger, showing the current battery level
+		tell application "Reminders"
+			make new reminder with properties {name:"Battery at " & batteryLevel & "% - Please remove charger", remind me date:current date}
+		end tell
+		
+		-- Check if the battery is at or below 30% and not charging
+	else if batteryLevel ≤ 30 and not isCharging then
+		-- Create a reminder to charge the MacBook, showing the current battery level
+		tell application "Reminders"
+			make new reminder with properties {name:"Battery at " & batteryLevel & "% - Please charge", remind me date:current date}
+		end tell
+	end if
+	
+	-- Error handling: If an error occurs, log it to a file
+on error errMsg
+	-- Append the error message to the error log file for troubleshooting
+	do shell script "echo " & quoted form of errMsg & " >> ~/battery_check_error.log"
+end try
