@@ -8,15 +8,15 @@ try
 	-- Determine if the MacBook is currently connected to power (charging)
 	set isCharging to batteryInfo contains "AC Power"
 	
-	-- Check if the battery is at or above 70% and charging
-	if batteryLevel ≥ 70 and isCharging then
+	-- Check if the battery is at or above 80% and charging
+	if batteryLevel ≥ 80 and isCharging then
 		-- Create a reminder to remove the charger, showing the current battery level
 		tell application "Reminders"
 			make new reminder with properties {name:"Battery at " & batteryLevel & "% - Please remove charger", remind me date:current date}
 		end tell
 		
-		-- Check if the battery is at or below 30% and not charging
-	else if batteryLevel ≤ 30 and not isCharging then
+		-- Check if the battery is at or below 20% and not charging
+	else if batteryLevel ≤ 20 and not isCharging then
 		-- Create a reminder to charge the MacBook, showing the current battery level
 		tell application "Reminders"
 			make new reminder with properties {name:"Battery at " & batteryLevel & "% - Please charge", remind me date:current date}
